@@ -1,27 +1,26 @@
 package handler
 
 import (
-	"github.com/gofiber/fiber"
+	"github.com/gofiber/fiber/v2"
 )
 
 type Handler struct {
 }
 
-func (h *Handler) SetupRouts() *fiber.App {
-	app := fiber.New()
+func (h *Handler) SetupRouts(app *fiber.App) {
+	//Authorization group
+	auth := app.Group("/auth")      // /auth
+	auth.Post("/sign-up", h.signUp) // /auth/sign-in (registration)
+	auth.Post("/sign-in", h.signIn) // /auth/sign-up (аутентификация)
 
-	auth := app.Group("/auth") // /auth
-	auth.Post("/sign-up")      // /auth/sign-in
-	auth.Post("/sign-in")      // /auth/sign-up
+	//API group (auth required)
+	api := app.Group("/api", h.userAuthMiddleware) // /api
 
-	api := app.Group("/api") // /api
-
-	songs := api.Group("/songs") // /api/songs
-	songs.Post("/")              // /api/songs/ add new song
-	songs.Get("/")               // /api/songs/id get all songs
-	songs.Get("/:id")            // /api/songs/id get song by id
-	songs.Put("/:id")            // /api/songs/id update songs info by id
-	songs.Delete("/:id")         // /api/songs/id delete song by id
-
-	return app
+	//CRUD songs operations
+	songs := api.Group("/songs")               // /api/songs
+	songs.Post("/", h.addUserSong)             // /api/songs/ add new song
+	songs.Get("/", h.getUserSongs)             // /api/songs/id get all songs
+	songs.Get("/:id", h.getUserSongById)       // /api/songs/id get song by id
+	songs.Put("/:id", h.updateUserSongInfo)    // /api/songs/id update songs info by id
+	songs.Delete("/:id", h.deleteUserSongById) // /api/songs/id delete song by id
 }
