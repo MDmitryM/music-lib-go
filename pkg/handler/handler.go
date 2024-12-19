@@ -1,10 +1,16 @@
 package handler
 
 import (
+	"github.com/MDmitryM/music-lib-go/pkg/service"
 	"github.com/gofiber/fiber/v2"
 )
 
 type Handler struct {
+	services *service.Service
+}
+
+func NewHandler(serv *service.Service) *Handler {
+	return &Handler{services: serv}
 }
 
 func (h *Handler) SetupRouts(app *fiber.App) {

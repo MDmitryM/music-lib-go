@@ -7,7 +7,10 @@ import (
 	"time"
 
 	"github.com/MDmitryM/music-lib-go/pkg/handler"
+	"github.com/MDmitryM/music-lib-go/pkg/repository"
+	"github.com/MDmitryM/music-lib-go/pkg/service"
 	"github.com/gofiber/fiber/v2"
+	"github.com/joho/godotenv"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
@@ -18,6 +21,13 @@ func main() {
 		logrus.Fatalf("cant read cfg!")
 	}
 
+	if err := godotenv.Load(); err != nil {
+		logrus.Fatalf("Can't load .env file, %s", err.Error())
+	}
+
+	var signingKey = os.Getenv("SINGING_KEY")
+	var salt = os.Getenv("SIGNING_SALT")
+
 	app := fiber.New(fiber.Config{
 		//Prefork:       true,             // включаем предварительное форкование для увеличения производительности на многоядерных процессорах
 		ServerHeader:  "Fiber",          // добавляем заголовок для идентификации сервера
@@ -26,7 +36,26 @@ func main() {
 		CaseSensitive: true,             // включаем чувствительность к регистру в URL
 		StrictRouting: true,             // включаем строгую маршрутизацию
 	})
-	h := new(handler.Handler)
+
+	db, err := repository.NewPostgresDB(repository.PostgresConfig{
+		Host:     viper.GetString("dev_db.host"),
+		Port:     viper.GetString("dev_db.port"),
+		Username: viper.GetString("dev_db.username"),
+		Password: os.Getenv("DB_PASSWORD"),
+		SSLMode:  viper.GetString("dev_db.sslmode"),
+		DBName:   viper.GetString("dev_db.dbname"),
+	})
+	if err != nil {
+		logrus.Fatalf("Connection to db failed, %s", err.Error())
+	}
+
+	repository := repository.NewRepository(db)
+	service, err := service.NewService(repository, signingKey, salt)
+	if err != nil {
+		logrus.Fatalf("service error, %s", err.Error())
+	}
+
+	h := handler.NewHandler(service)
 	h.SetupRouts(app)
 
 	go func() {
