@@ -3,6 +3,7 @@ package repository
 import (
 	"fmt"
 
+	"github.com/MDmitryM/music-lib-go/models"
 	"github.com/sirupsen/logrus"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -25,4 +26,8 @@ func NewPostgresDB(cfg PostgresConfig) (*gorm.DB, error) {
 	}
 	logrus.Println("db connected successfully")
 	return db, nil
+}
+
+func MigratePostgres(db *gorm.DB) error {
+	return db.AutoMigrate(&models.UserModel{}, &models.SongModel{})
 }

@@ -8,3 +8,7 @@ type SongModel struct {
 	Year   int
 	UserID uint `gorm:"not null"`
 }
+
+func (SongModel) TableName() string {
+	return "songs"
+}

@@ -7,3 +7,7 @@ type UserModel struct {
 	Name         string      `gorm:"not null"`
 	Songs        []SongModel `gorm:"foreignKey:UserID"`
 }
+
+func (UserModel) TableName() string {
+	return "users"
+}

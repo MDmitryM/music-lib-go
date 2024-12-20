@@ -49,6 +49,10 @@ func main() {
 		logrus.Fatalf("Connection to db failed, %s", err.Error())
 	}
 
+	if err = repository.MigratePostgres(db); err != nil {
+		logrus.Fatalf("Migration failed, %s", err.Error())
+	}
+
 	repository := repository.NewRepository(db)
 	service, err := service.NewService(repository, signingKey, salt)
 	if err != nil {
