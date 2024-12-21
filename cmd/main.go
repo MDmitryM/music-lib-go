@@ -25,9 +25,6 @@ func main() {
 		logrus.Fatalf("Can't load .env file, %s", err.Error())
 	}
 
-	var signingKey = os.Getenv("SINGING_KEY")
-	var salt = os.Getenv("SIGNING_SALT")
-
 	app := fiber.New(fiber.Config{
 		//Prefork:       true,             // включаем предварительное форкование для увеличения производительности на многоядерных процессорах
 		ServerHeader:  "Fiber",          // добавляем заголовок для идентификации сервера
@@ -54,10 +51,7 @@ func main() {
 	}
 
 	repository := repository.NewRepository(db)
-	service, err := service.NewService(repository, signingKey, salt)
-	if err != nil {
-		logrus.Fatalf("service error, %s", err.Error())
-	}
+	service := service.NewService(repository)
 
 	h := handler.NewHandler(service)
 	h.SetupRouts(app)

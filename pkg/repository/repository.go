@@ -1,8 +1,13 @@
 package repository
 
-import "gorm.io/gorm"
+import (
+	musiclib "github.com/MDmitryM/music-lib-go"
+	"gorm.io/gorm"
+)
 
 type Authorization interface {
+	CreateUser(input musiclib.User) (uint, error)
+	IsUserValid(email, password string) (uint, error)
 }
 
 type Song interface {

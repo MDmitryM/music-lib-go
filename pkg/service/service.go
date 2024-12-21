@@ -1,8 +1,13 @@
 package service
 
-import "github.com/MDmitryM/music-lib-go/pkg/repository"
+import (
+	musiclib "github.com/MDmitryM/music-lib-go"
+	"github.com/MDmitryM/music-lib-go/pkg/repository"
+)
 
 type Authorization interface {
+	CreateUser(user musiclib.User) (uint, error)
+	GenerateToken(email, password string) (string, error)
 }
 
 type Song interface {
@@ -13,13 +18,9 @@ type Service struct {
 	Song
 }
 
-func NewService(repo *repository.Repository, signingkey, salt string) (*Service, error) {
-	auth, err := NewAuthService(repo, signingkey, salt)
-	if err != nil {
-		return nil, err
-	}
+func NewService(repo *repository.Repository) *Service {
 	return &Service{
-		Authorization: auth,
+		Authorization: NewAuthService(repo),
 		Song:          NewSongService(repo),
-	}, nil
+	}
 }
