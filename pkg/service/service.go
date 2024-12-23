@@ -8,6 +8,7 @@ import (
 type Authorization interface {
 	CreateUser(user musiclib.User) (uint, error)
 	GenerateToken(email, password string) (string, error)
+	ParseToken(accessToken string) (uint, error)
 }
 
 type Song interface {

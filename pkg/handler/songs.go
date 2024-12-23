@@ -4,9 +4,11 @@ import (
 	"net/http"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/sirupsen/logrus"
 )
 
 func (h *Handler) addUserSong(ctx *fiber.Ctx) error {
+	logrus.Println(ctx.Locals("user_id"))
 	ctx.Status(http.StatusOK).JSON(&fiber.Map{
 		"message": "addUserSong",
 	})
@@ -14,6 +16,7 @@ func (h *Handler) addUserSong(ctx *fiber.Ctx) error {
 }
 
 func (h *Handler) getUserSongs(ctx *fiber.Ctx) error {
+	logrus.Println(ctx.Locals("user_id"))
 	ctx.Status(http.StatusOK).JSON(&fiber.Map{
 		"message": "getUserSongs",
 	})
@@ -21,6 +24,7 @@ func (h *Handler) getUserSongs(ctx *fiber.Ctx) error {
 }
 
 func (h *Handler) getUserSongById(ctx *fiber.Ctx) error {
+	logrus.Println(ctx.Locals("user_id"))
 	ctx.Status(http.StatusOK).JSON(&fiber.Map{
 		"message": "getUserSongById",
 	})
@@ -28,6 +32,7 @@ func (h *Handler) getUserSongById(ctx *fiber.Ctx) error {
 }
 
 func (h *Handler) updateUserSongInfo(ctx *fiber.Ctx) error {
+	logrus.Println(ctx.Locals("user_id"))
 	ctx.Status(http.StatusOK).JSON(&fiber.Map{
 		"message": "updateUserSongInfo",
 	})
@@ -35,6 +40,7 @@ func (h *Handler) updateUserSongInfo(ctx *fiber.Ctx) error {
 }
 
 func (h *Handler) deleteUserSongById(ctx *fiber.Ctx) error {
+	logrus.Println(ctx.Locals("user_id"))
 	ctx.Status(http.StatusOK).JSON(&fiber.Map{
 		"message": "deleteUserSongById",
 	})
