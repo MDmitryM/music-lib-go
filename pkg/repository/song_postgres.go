@@ -53,7 +53,7 @@ func (r *SongPostgres) GetUserSongById(userId uint, songId int) (models.SongMode
 		First(&songModel)
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-			return models.SongModel{}, errors.New("song now found")
+			return models.SongModel{}, errors.New("song not found")
 		}
 		return models.SongModel{}, result.Error
 	}
