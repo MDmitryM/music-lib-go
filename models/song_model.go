@@ -5,7 +5,7 @@ type SongModel struct {
 	Artist string `gorm:"not null"`
 	Title  string `gorm:"not null"`
 	Album  string
-	Year   int
+	Year   string
 	UserID uint `gorm:"not null"`
 }
 

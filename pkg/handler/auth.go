@@ -4,11 +4,9 @@ import (
 	"net/http"
 
 	musiclib "github.com/MDmitryM/music-lib-go"
-	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
+	"github.com/sirupsen/logrus"
 )
-
-var validate = validator.New(validator.WithRequiredStructEnabled())
 
 type SignInInput struct {
 	Email    string `json:"email" validate:"required,email"`
@@ -24,12 +22,14 @@ func (h *Handler) signUp(ctx *fiber.Ctx) error {
 	var input musiclib.User
 
 	if err := ctx.BodyParser(&input); err != nil {
+		logrus.Error(err.Error())
 		return ctx.Status(http.StatusBadRequest).JSON(fiber.Map{
 			"error": err.Error(),
 		})
 	}
 
 	if err := validate.Struct(input); err != nil {
+		logrus.Error(err.Error())
 		return ctx.Status(http.StatusBadRequest).JSON(fiber.Map{
 			"error": err.Error(),
 		})
@@ -37,6 +37,7 @@ func (h *Handler) signUp(ctx *fiber.Ctx) error {
 
 	id, err := h.services.Authorization.CreateUser(input)
 	if err != nil {
+		logrus.Error(err.Error())
 		return ctx.Status(http.StatusInternalServerError).JSON(fiber.Map{
 			"error": err.Error(),
 		})
@@ -44,11 +45,13 @@ func (h *Handler) signUp(ctx *fiber.Ctx) error {
 
 	token, err := h.services.Authorization.GenerateToken(input.Email, input.Password)
 	if err != nil {
+		logrus.Error(err.Error())
 		return ctx.Status(http.StatusInternalServerError).JSON(fiber.Map{
 			"error": err.Error(),
 		})
 	}
 
+	logrus.Printf("successfully signed up, userId=%v", id)
 	return ctx.Status(http.StatusOK).JSON(RegisterResponce{
 		ID:          id,
 		AccessToken: token,
@@ -59,12 +62,14 @@ func (h *Handler) signIn(ctx *fiber.Ctx) error {
 	var input SignInInput
 
 	if err := ctx.BodyParser(&input); err != nil {
+		logrus.Error(err.Error())
 		return ctx.Status(http.StatusBadRequest).JSON(fiber.Map{
 			"error": err.Error(),
 		})
 	}
 
 	if err := validate.Struct(input); err != nil {
+		logrus.Error(err.Error())
 		return ctx.Status(http.StatusBadRequest).JSON(fiber.Map{
 			"error": err.Error(),
 		})
@@ -72,11 +77,13 @@ func (h *Handler) signIn(ctx *fiber.Ctx) error {
 
 	token, err := h.services.Authorization.GenerateToken(input.Email, input.Password)
 	if err != nil {
+		logrus.Error(err.Error())
 		return ctx.Status(http.StatusInternalServerError).JSON(fiber.Map{
 			"error": err.Error(),
 		})
 	}
 
+	logrus.Println("successfully signed in")
 	return ctx.Status(http.StatusOK).JSON(fiber.Map{
 		"access_token": token,
 	})
