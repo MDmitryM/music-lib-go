@@ -14,6 +14,7 @@ type Authorization interface {
 type Song interface {
 	AddUserSong(userId uint, song musiclib.Song) (uint, error)
 	GetUserSongs(userId uint, offset, pageSize int) ([]models.SongModel, error)
+	GetUserSongById(userId uint, songId int) (models.SongModel, error)
 }
 
 type Repository struct {

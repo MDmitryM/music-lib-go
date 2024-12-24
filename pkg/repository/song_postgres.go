@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"errors"
+
 	musiclib "github.com/MDmitryM/music-lib-go"
 	"github.com/MDmitryM/music-lib-go/models"
 	"github.com/sirupsen/logrus"
@@ -41,4 +43,20 @@ func (r *SongPostgres) GetUserSongs(userId uint, offset, pageSize int) ([]models
 	}
 
 	return songs, nil
+}
+
+func (r *SongPostgres) GetUserSongById(userId uint, songId int) (models.SongModel, error) {
+	var songModel models.SongModel
+
+	result := r.db.Where("user_id = ?", userId).
+		Where("id = ?", songId).
+		First(&songModel)
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return models.SongModel{}, errors.New("song now found")
+		}
+		return models.SongModel{}, result.Error
+	}
+
+	return songModel, nil
 }

@@ -31,3 +31,13 @@ func (s *SongService) GetUserSongs(userId uint, page, pageSize int) ([]musiclib.
 
 	return songs, nil
 }
+
+func (s *SongService) GetUserSongById(userId uint, songId int) (musiclib.Song, error) {
+	songModel, err := s.repo.Song.GetUserSongById(userId, songId)
+	if err != nil {
+		return musiclib.Song{}, err
+	}
+	song := musiclib.FromModel(songModel)
+
+	return song, nil
+}

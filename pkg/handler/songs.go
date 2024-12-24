@@ -84,11 +84,31 @@ func (h *Handler) getUserSongs(ctx *fiber.Ctx) error {
 }
 
 func (h *Handler) getUserSongById(ctx *fiber.Ctx) error {
-	logrus.Println(ctx.Locals("user_id"))
-	ctx.Status(http.StatusOK).JSON(&fiber.Map{
-		"message": "getUserSongById",
-	})
-	return nil
+	userId, ok := ctx.Locals("user_id").(uint)
+	if !ok {
+		logrus.Error("invalid user id")
+		return ctx.Status(http.StatusUnauthorized).JSON(fiber.Map{
+			"error": "invalid user id",
+		})
+	}
+
+	songId, err := strconv.Atoi(ctx.Params("id"))
+	if err != nil {
+		logrus.Error(err.Error())
+		return ctx.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"error": err.Error(),
+		})
+	}
+
+	song, err := h.services.Song.GetUserSongById(userId, songId)
+	if err != nil {
+		logrus.Error(err.Error())
+		return ctx.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"error": err.Error(),
+		})
+	}
+
+	return ctx.Status(http.StatusOK).JSON(song)
 }
 
 func (h *Handler) updateUserSongInfo(ctx *fiber.Ctx) error {
