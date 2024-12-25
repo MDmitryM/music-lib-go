@@ -25,8 +25,8 @@ type RegisterResponce struct {
 // @Produce		json
 // @Param			input	body		musiclib.User	true	"Account info"
 // @Success		200		{object}	RegisterResponce
-// @Failure		400,404	{object}	MyError "4** error"
-// @Failure		500		{object}	MyError "5** error"
+// @Failure		400,404	{object}	MyError	"4** error"
+// @Failure		500		{object}	MyError	"5** error"
 // @Router			/auth/sign-up [post]
 func (h *Handler) signUp(ctx *fiber.Ctx) error {
 	var input musiclib.User
@@ -77,10 +77,10 @@ type SignInResponce struct {
 // @Description	Login
 // @Accept			json
 // @Produce		json
-// @Param			input	body		SignInInput			true	"Credentials"
+// @Param			input	body		SignInInput		true	"Credentials"
 // @Success		200		{object}	SignInResponce	"Successful login"
-// @Failure		400,404	{object}	MyError "4** error"
-// @Failure		500		{object}	MyError "5** error"
+// @Failure		400,404	{object}	MyError			"4** error"
+// @Failure		500		{object}	MyError			"5** error"
 // @Router			/auth/sign-in [post]
 func (h *Handler) signIn(ctx *fiber.Ctx) error {
 	var input SignInInput

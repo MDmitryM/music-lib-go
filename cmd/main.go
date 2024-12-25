@@ -16,8 +16,8 @@ import (
 )
 
 // @title						Music lib API
-// @version					1.0
-// @description				API server for music lib applicatiom
+// @version					    1.0
+// @description				    API server for music lib applicatiom
 // @host						localhost:8080
 // @BasePath					/
 // @securityDefinitions.apikey	ApiKeyAuth
@@ -29,8 +29,31 @@ func main() {
 		logrus.Fatalf("cant read cfg!")
 	}
 
-	if err := godotenv.Load(); err != nil {
-		logrus.Fatalf("Can't load .env file, %s", err.Error())
+	var conf repository.PostgresConfig
+	env := os.Getenv("ENV")
+	logrus.Printf("env = %s\n", env)
+	if env != "production" {
+		//Открываем .env только в dev
+		if err := godotenv.Load(); err != nil {
+			logrus.Fatalf("Can't load .env file, %s", err.Error())
+		}
+		conf = repository.PostgresConfig{
+			Host:     viper.GetString("dev_db.host"),
+			Port:     viper.GetString("dev_db.port"),
+			Username: viper.GetString("dev_db.username"),
+			Password: os.Getenv("DB_PASSWORD"),
+			SSLMode:  viper.GetString("dev_db.sslmode"),
+			DBName:   viper.GetString("dev_db.dbname"),
+		}
+	} else {
+		conf = repository.PostgresConfig{
+			Host:     viper.GetString("db.host"),
+			Port:     viper.GetString("db.port"),
+			Username: viper.GetString("db.username"),
+			Password: os.Getenv("DB_PASSWORD"),
+			SSLMode:  viper.GetString("db.sslmode"),
+			DBName:   viper.GetString("db.dbname"),
+		}
 	}
 
 	app := fiber.New(fiber.Config{
@@ -42,14 +65,7 @@ func main() {
 		StrictRouting: true,             // включаем строгую маршрутизацию
 	})
 
-	db, err := repository.NewPostgresDB(repository.PostgresConfig{
-		Host:     viper.GetString("dev_db.host"),
-		Port:     viper.GetString("dev_db.port"),
-		Username: viper.GetString("dev_db.username"),
-		Password: os.Getenv("DB_PASSWORD"),
-		SSLMode:  viper.GetString("dev_db.sslmode"),
-		DBName:   viper.GetString("dev_db.dbname"),
-	})
+	db, err := repository.NewPostgresDB(conf)
 	if err != nil {
 		logrus.Fatalf("Connection to db failed, %s", err.Error())
 	}

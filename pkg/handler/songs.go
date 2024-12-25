@@ -13,17 +13,17 @@ type AddSongResponse struct {
 	SongId uint `json:"song_id"`
 }
 
-// @Summary		Add a Song
-// @Security ApiKeyAuth
-// @Tags			Songs
-// @Description	Add a song to user's collection
-// @Accept			json
-// @Produce		json
-// @Param			input	body		musiclib.Song			true	"Song details"
-// @Success		200		{object}	AddSongResponse	"Successfully added"
-// @Failure		400,401,404	{object}	MyError "4** error"
-// @Failure		500		{object}	MyError "5** error"
-// @Router			/api/songs [post]
+//	@Summary		Add a Song
+//	@Security		ApiKeyAuth
+//	@Tags			Songs
+//	@Description	Add a song to user's collection
+//	@Accept			json
+//	@Produce		json
+//	@Param			input		body		musiclib.Song	true	"Song details"
+//	@Success		200			{object}	AddSongResponse	"Successfully added"
+//	@Failure		400,401,404	{object}	MyError			"4** error"
+//	@Failure		500			{object}	MyError			"5** error"
+//	@Router			/api/songs [post]
 func (h *Handler) addUserSong(ctx *fiber.Ctx) error {
 	var songInput musiclib.Song
 
@@ -62,19 +62,19 @@ func (h *Handler) addUserSong(ctx *fiber.Ctx) error {
 	})
 }
 
-// @Summary      Get user songs
-// @Security     ApiKeyAuth
-// @Tags         Songs
-// @Description  Retrieve user songs with pagination
-// @Accept       json
-// @Produce      json
-// @Param        page     query    int  false "Page number (default: 1)"
-// @Param        pageSize query    int  false "Number of items per page (default: 10)"
-// @Success      200 {array} musiclib.Song "List of songs"
-// @Failure      400 {object} MyError "Invalid query parameters"
-// @Failure      401 {object} MyError "Unauthorized"
-// @Failure      500 {object} MyError "Internal server error"
-// @Router       /api/songs [get]
+//	@Summary		Get user songs
+//	@Security		ApiKeyAuth
+//	@Tags			Songs
+//	@Description	Retrieve user songs with pagination
+//	@Accept			json
+//	@Produce		json
+//	@Param			page		query		int				false	"Page number (default: 1)"
+//	@Param			pageSize	query		int				false	"Number of items per page (default: 10)"
+//	@Success		200			{array}		musiclib.Song	"List of songs"
+//	@Failure		400			{object}	MyError			"Invalid query parameters"
+//	@Failure		401			{object}	MyError			"Unauthorized"
+//	@Failure		500			{object}	MyError			"Internal server error"
+//	@Router			/api/songs [get]
 func (h *Handler) getUserSongs(ctx *fiber.Ctx) error {
 	userId, ok := ctx.Locals("user_id").(uint)
 
@@ -111,18 +111,18 @@ func (h *Handler) getUserSongs(ctx *fiber.Ctx) error {
 	return ctx.Status(http.StatusOK).JSON(songs)
 }
 
-// @Summary      Get user songs by ID
-// @Security     ApiKeyAuth
-// @Tags         Songs
-// @Description  Retrieve user songs by ID
-// @Accept       json
-// @Produce      json
-// @Param        id   path      int  true  "Song ID"
-// @Success      200 {object} musiclib.Song "Song"
-// @Failure      400 {object} MyError "Invalid query parameters"
-// @Failure      401 {object} MyError "Unauthorized"
-// @Failure      500 {object} MyError "Internal server error"
-// @Router       /api/songs/{id} [get]
+//	@Summary		Get user songs by ID
+//	@Security		ApiKeyAuth
+//	@Tags			Songs
+//	@Description	Retrieve user songs by ID
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path		int				true	"Song ID"
+//	@Success		200	{object}	musiclib.Song	"Song"
+//	@Failure		400	{object}	MyError			"Invalid query parameters"
+//	@Failure		401	{object}	MyError			"Unauthorized"
+//	@Failure		500	{object}	MyError			"Internal server error"
+//	@Router			/api/songs/{id} [get]
 func (h *Handler) getUserSongById(ctx *fiber.Ctx) error {
 	userId, ok := ctx.Locals("user_id").(uint)
 	if !ok {
@@ -151,19 +151,19 @@ func (h *Handler) getUserSongById(ctx *fiber.Ctx) error {
 	return ctx.Status(http.StatusOK).JSON(song)
 }
 
-// @Summary      Update user song by ID
-// @Security     ApiKeyAuth
-// @Tags         Songs
-// @Description  Updating user song info by ID
-// @Accept       json
-// @Produce      json
-// @Param        id   path      int  true  "Song ID"
-// @Param		 input body		musiclib.Song true "Song data to update"
-// @Success      200 {object} musiclib.Song "Updated Song"
-// @Failure      400 {object} MyError "Invalid query parameters"
-// @Failure      401 {object} MyError "Unauthorized"
-// @Failure      500 {object} MyError "Internal server error"
-// @Router       /api/songs/{id} [put]
+//	@Summary		Update user song by ID
+//	@Security		ApiKeyAuth
+//	@Tags			Songs
+//	@Description	Updating user song info by ID
+//	@Accept			json
+//	@Produce		json
+//	@Param			id		path		int				true	"Song ID"
+//	@Param			input	body		musiclib.Song	true	"Song data to update"
+//	@Success		200		{object}	musiclib.Song	"Updated Song"
+//	@Failure		400		{object}	MyError			"Invalid query parameters"
+//	@Failure		401		{object}	MyError			"Unauthorized"
+//	@Failure		500		{object}	MyError			"Internal server error"
+//	@Router			/api/songs/{id} [put]
 func (h *Handler) updateUserSongInfo(ctx *fiber.Ctx) error {
 	userId, ok := ctx.Locals("user_id").(uint)
 	if !ok {
@@ -212,19 +212,19 @@ type DeleteSongResponce struct {
 	Status string `json:"status"`
 }
 
-// @Summary      Delete user song by ID
-// @Security     ApiKeyAuth
-// @Tags         Songs
-// @Description  Deleting user song by ID
-// @Accept       json
-// @Produce      json
-// @Param        id   path      int  true  "Song ID"
-// @Success      200 {object} DeleteSongResponce "Deletion status"
-// @Example		 200 {object} DeleteSongResponce {"status": "ok"}
-// @Failure      400 {object} MyError "Invalid query parameters"
-// @Failure      401 {object} MyError "Unauthorized"
-// @Failure      500 {object} MyError "Internal server error"
-// @Router       /api/songs/{id} [delete]
+//	@Summary		Delete user song by ID
+//	@Security		ApiKeyAuth
+//	@Tags			Songs
+//	@Description	Deleting user song by ID
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path		int					true	"Song ID"
+//	@Success		200	{object}	DeleteSongResponce	"Deletion status"
+//	@Example		200 {object} DeleteSongResponce {"status": "ok"}
+//	@Failure		400	{object}	MyError	"Invalid query parameters"
+//	@Failure		401	{object}	MyError	"Unauthorized"
+//	@Failure		500	{object}	MyError	"Internal server error"
+//	@Router			/api/songs/{id} [delete]
 func (h *Handler) deleteUserSongById(ctx *fiber.Ctx) error {
 	userId, ok := ctx.Locals("user_id").(uint)
 	if !ok {
