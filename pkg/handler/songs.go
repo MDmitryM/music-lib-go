@@ -112,11 +112,47 @@ func (h *Handler) getUserSongById(ctx *fiber.Ctx) error {
 }
 
 func (h *Handler) updateUserSongInfo(ctx *fiber.Ctx) error {
-	logrus.Println(ctx.Locals("user_id"))
-	ctx.Status(http.StatusOK).JSON(&fiber.Map{
-		"message": "updateUserSongInfo",
-	})
-	return nil
+	userId, ok := ctx.Locals("user_id").(uint)
+	if !ok {
+		logrus.Error("invalid user id")
+		return ctx.Status(http.StatusUnauthorized).JSON(fiber.Map{
+			"error": "invalid user id",
+		})
+	}
+
+	songId, err := strconv.Atoi(ctx.Params("id"))
+	if err != nil {
+		logrus.Error(err.Error())
+		return ctx.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"error": err.Error(),
+		})
+	}
+
+	var songInput musiclib.Song
+	if err := ctx.BodyParser(&songInput); err != nil {
+		logrus.Error(err.Error())
+		return ctx.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"error": err.Error(),
+		})
+	}
+
+	if err := validate.Struct(songInput); err != nil {
+		logrus.Error(err.Error())
+		return ctx.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"error": err.Error(),
+		})
+	}
+
+	updatedSong, err := h.services.Song.UpdateUserSongInfo(userId, songId, songInput)
+	if err != nil {
+		logrus.Error(err.Error())
+		return ctx.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"error": err.Error(),
+		})
+	}
+
+	logrus.Printf("song %s is updated successfully", updatedSong.Title)
+	return ctx.Status(http.StatusOK).JSON(updatedSong)
 }
 
 func (h *Handler) deleteUserSongById(ctx *fiber.Ctx) error {

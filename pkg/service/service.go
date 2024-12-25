@@ -15,6 +15,7 @@ type Song interface {
 	AddUserSong(userId uint, song musiclib.Song) (uint, error)
 	GetUserSongs(userId uint, page, pageSize int) ([]musiclib.Song, error)
 	GetUserSongById(userId uint, songId int) (musiclib.Song, error)
+	UpdateUserSongInfo(userId uint, songId int, songInput musiclib.Song) (musiclib.Song, error)
 }
 
 type Service struct {

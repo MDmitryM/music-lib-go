@@ -41,3 +41,14 @@ func (s *SongService) GetUserSongById(userId uint, songId int) (musiclib.Song, e
 
 	return song, nil
 }
+
+func (s *SongService) UpdateUserSongInfo(userId uint, songId int, songInput musiclib.Song) (musiclib.Song, error) {
+	updatedSongModel, err := s.repo.Song.UpdateUserSongInfo(userId, uint(songId), songInput)
+	if err != nil {
+		return musiclib.Song{}, err
+	}
+
+	updatedSong := musiclib.FromModel(updatedSongModel)
+
+	return updatedSong, nil
+}

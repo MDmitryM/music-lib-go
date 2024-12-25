@@ -60,3 +60,24 @@ func (r *SongPostgres) GetUserSongById(userId uint, songId int) (models.SongMode
 
 	return songModel, nil
 }
+
+func (r *SongPostgres) UpdateUserSongInfo(userId uint, songId uint, song musiclib.Song) (models.SongModel, error) {
+	songModel := song.ToModel(userId)
+	songModel.ID = songId
+
+	result := r.db.Where("id = ? AND user_id = ?", songId, userId).Updates(&songModel)
+	if result.Error != nil {
+		return models.SongModel{}, result.Error
+	}
+
+	if result.RowsAffected == 0 {
+		return models.SongModel{}, errors.New("song not found or user doesn't have access")
+	}
+
+	var updatedSong models.SongModel
+	if err := r.db.First(&updatedSong, songId).Error; err != nil {
+		return models.SongModel{}, err
+	}
+
+	return updatedSong, nil
+}
