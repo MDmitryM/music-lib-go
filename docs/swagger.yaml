@@ -1,0 +1,335 @@
+basePath: /
+definitions:
+  handler.AddSongResponse:
+    properties:
+      song_id:
+        type: integer
+    type: object
+  handler.DeleteSongResponce:
+    properties:
+      status:
+        type: string
+    type: object
+  handler.MyError:
+    properties:
+      error:
+        type: string
+    type: object
+  handler.RegisterResponce:
+    properties:
+      access_token:
+        type: string
+      id:
+        type: integer
+    type: object
+  handler.SignInInput:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  handler.SignInResponce:
+    properties:
+      access_token:
+        type: string
+    type: object
+  musiclib.Song:
+    properties:
+      album:
+        type: string
+      artist:
+        type: string
+      title:
+        type: string
+      year:
+        type: string
+    required:
+    - artist
+    - title
+    type: object
+  musiclib.User:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - name
+    - password
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: API server for music lib applicatiom
+  title: Music lib API
+  version: "1.0"
+paths:
+  /api/songs:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve user songs with pagination
+      parameters:
+      - description: 'Page number (default: 1)'
+        in: query
+        name: page
+        type: integer
+      - description: 'Number of items per page (default: 10)'
+        in: query
+        name: pageSize
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of songs
+          schema:
+            items:
+              $ref: '#/definitions/musiclib.Song'
+            type: array
+        "400":
+          description: Invalid query parameters
+          schema:
+            $ref: '#/definitions/handler.MyError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handler.MyError'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.MyError'
+      security:
+      - ApiKeyAuth: []
+      summary: Get user songs
+      tags:
+      - Songs
+    post:
+      consumes:
+      - application/json
+      description: Add a song to user's collection
+      parameters:
+      - description: Song details
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/musiclib.Song'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully added
+          schema:
+            $ref: '#/definitions/handler.AddSongResponse'
+        "400":
+          description: 4** error
+          schema:
+            $ref: '#/definitions/handler.MyError'
+        "401":
+          description: 4** error
+          schema:
+            $ref: '#/definitions/handler.MyError'
+        "404":
+          description: 4** error
+          schema:
+            $ref: '#/definitions/handler.MyError'
+        "500":
+          description: 5** error
+          schema:
+            $ref: '#/definitions/handler.MyError'
+      security:
+      - ApiKeyAuth: []
+      summary: Add a Song
+      tags:
+      - Songs
+  /api/songs/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Deleting user song by ID
+      parameters:
+      - description: Song ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Deletion status
+          schema:
+            $ref: '#/definitions/handler.DeleteSongResponce'
+        "400":
+          description: Invalid query parameters
+          schema:
+            $ref: '#/definitions/handler.MyError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handler.MyError'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.MyError'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete user song by ID
+      tags:
+      - Songs
+    get:
+      consumes:
+      - application/json
+      description: Retrieve user songs by ID
+      parameters:
+      - description: Song ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Song
+          schema:
+            $ref: '#/definitions/musiclib.Song'
+        "400":
+          description: Invalid query parameters
+          schema:
+            $ref: '#/definitions/handler.MyError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handler.MyError'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.MyError'
+      security:
+      - ApiKeyAuth: []
+      summary: Get user songs by ID
+      tags:
+      - Songs
+    put:
+      consumes:
+      - application/json
+      description: Updating user song info by ID
+      parameters:
+      - description: Song ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Song data to update
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/musiclib.Song'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Updated Song
+          schema:
+            $ref: '#/definitions/musiclib.Song'
+        "400":
+          description: Invalid query parameters
+          schema:
+            $ref: '#/definitions/handler.MyError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handler.MyError'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.MyError'
+      security:
+      - ApiKeyAuth: []
+      summary: Update user song by ID
+      tags:
+      - Songs
+  /auth/sign-in:
+    post:
+      consumes:
+      - application/json
+      description: Login
+      parameters:
+      - description: Credentials
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/handler.SignInInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful login
+          schema:
+            $ref: '#/definitions/handler.SignInResponce'
+        "400":
+          description: 4** error
+          schema:
+            $ref: '#/definitions/handler.MyError'
+        "404":
+          description: 4** error
+          schema:
+            $ref: '#/definitions/handler.MyError'
+        "500":
+          description: 5** error
+          schema:
+            $ref: '#/definitions/handler.MyError'
+      summary: SignIn
+      tags:
+      - Auth
+  /auth/sign-up:
+    post:
+      consumes:
+      - application/json
+      description: Create account
+      parameters:
+      - description: Account info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/musiclib.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.RegisterResponce'
+        "400":
+          description: 4** error
+          schema:
+            $ref: '#/definitions/handler.MyError'
+        "404":
+          description: 4** error
+          schema:
+            $ref: '#/definitions/handler.MyError'
+        "500":
+          description: 5** error
+          schema:
+            $ref: '#/definitions/handler.MyError'
+      summary: SignUp
+      tags:
+      - Auth
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

@@ -4,6 +4,9 @@ import (
 	"github.com/MDmitryM/music-lib-go/pkg/service"
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
+
+	_ "github.com/MDmitryM/music-lib-go/docs"
+	"github.com/gofiber/swagger"
 )
 
 var validate = validator.New(validator.WithRequiredStructEnabled())
@@ -17,6 +20,8 @@ func NewHandler(serv *service.Service) *Handler {
 }
 
 func (h *Handler) SetupRouts(app *fiber.App) {
+	//Swagger
+	app.Get("/swagger/*", swagger.HandlerDefault)
 	//Authorization group
 	auth := app.Group("/auth")      // /auth
 	auth.Post("/sign-up", h.signUp) // /auth/sign-in (registration)

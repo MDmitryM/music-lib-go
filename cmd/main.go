@@ -15,6 +15,14 @@ import (
 	"github.com/spf13/viper"
 )
 
+// @title						Music lib API
+// @version					1.0
+// @description				API server for music lib applicatiom
+// @host						localhost:8080
+// @BasePath					/
+// @securityDefinitions.apikey	ApiKeyAuth
+// @in							header
+// @name						Authorization
 func main() {
 	logrus.SetFormatter(new(logrus.JSONFormatter))
 	if err := initConfig(); err != nil {
