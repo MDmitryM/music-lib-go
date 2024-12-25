@@ -33,7 +33,7 @@ func (s *SongService) GetUserSongs(userId uint, page, pageSize int) ([]musiclib.
 }
 
 func (s *SongService) GetUserSongById(userId uint, songId int) (musiclib.Song, error) {
-	songModel, err := s.repo.Song.GetUserSongById(userId, songId)
+	songModel, err := s.repo.Song.GetUserSongById(userId, uint(songId))
 	if err != nil {
 		return musiclib.Song{}, err
 	}
@@ -51,4 +51,8 @@ func (s *SongService) UpdateUserSongInfo(userId uint, songId int, songInput musi
 	updatedSong := musiclib.FromModel(updatedSongModel)
 
 	return updatedSong, nil
+}
+
+func (s *SongService) DeleteUserSongByID(userId uint, songId int) error {
+	return s.repo.Song.DeleteUserSongByID(userId, uint(songId))
 }

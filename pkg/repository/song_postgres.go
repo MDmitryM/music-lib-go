@@ -45,7 +45,7 @@ func (r *SongPostgres) GetUserSongs(userId uint, offset, pageSize int) ([]models
 	return songs, nil
 }
 
-func (r *SongPostgres) GetUserSongById(userId uint, songId int) (models.SongModel, error) {
+func (r *SongPostgres) GetUserSongById(userId uint, songId uint) (models.SongModel, error) {
 	var songModel models.SongModel
 
 	result := r.db.Where("user_id = ?", userId).
@@ -80,4 +80,17 @@ func (r *SongPostgres) UpdateUserSongInfo(userId uint, songId uint, song musicli
 	}
 
 	return updatedSong, nil
+}
+
+func (r *SongPostgres) DeleteUserSongByID(userId, songId uint) error {
+	result := r.db.Where("id = ? AND user_id = ?", songId, userId).Delete(&models.SongModel{})
+	if result.Error != nil {
+		return result.Error
+	}
+
+	if result.RowsAffected == 0 {
+		return errors.New("song not found or user doesn't have access")
+	}
+
+	return nil
 }

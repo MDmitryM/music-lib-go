@@ -156,9 +156,30 @@ func (h *Handler) updateUserSongInfo(ctx *fiber.Ctx) error {
 }
 
 func (h *Handler) deleteUserSongById(ctx *fiber.Ctx) error {
-	logrus.Println(ctx.Locals("user_id"))
-	ctx.Status(http.StatusOK).JSON(&fiber.Map{
-		"message": "deleteUserSongById",
+	userId, ok := ctx.Locals("user_id").(uint)
+	if !ok {
+		logrus.Error("ivalid user id")
+		return ctx.Status(http.StatusUnauthorized).JSON(fiber.Map{
+			"error": "invalid user id",
+		})
+	}
+
+	songId, err := strconv.Atoi(ctx.Params("id"))
+	if err != nil {
+		logrus.Error(err.Error())
+		return ctx.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"error": err.Error(),
+		})
+	}
+
+	if err := h.services.Song.DeleteUserSongByID(userId, songId); err != nil {
+		return ctx.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"error": err.Error(),
+		})
+	}
+
+	logrus.Printf("song succesfully deleted songId = %v userId = %v\n", songId, userId)
+	return ctx.Status(http.StatusOK).JSON(fiber.Map{
+		"status": "ok",
 	})
-	return nil
 }

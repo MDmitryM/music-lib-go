@@ -16,6 +16,7 @@ type Song interface {
 	GetUserSongs(userId uint, page, pageSize int) ([]musiclib.Song, error)
 	GetUserSongById(userId uint, songId int) (musiclib.Song, error)
 	UpdateUserSongInfo(userId uint, songId int, songInput musiclib.Song) (musiclib.Song, error)
+	DeleteUserSongByID(userId uint, songId int) error
 }
 
 type Service struct {
