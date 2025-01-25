@@ -10,8 +10,5 @@ FROM alpine:3.17
 
 COPY --from=build /music-lib-go /music-lib-go
 COPY ./configs/ /configs/
-ENV ENV=production
-ENV DB_PASSWORD=prod_password
-ENV SIGNING_KEY=prod_signing_key
 
 CMD ["./music-lib-go"]
