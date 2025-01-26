@@ -10,7 +10,9 @@ services:
     plan: free # Выберите подходящий тарифный план
     envVars:
       - key: DATABASE_URL
-        fromDatabase: go-db # Ссылка на базу данных PostgreSQL
+        fromDatabase: 
+          name: go-db # Ссылка на базу данных PostgreSQL
+          property: connectionString
 
 databases:
   - name: go-db
