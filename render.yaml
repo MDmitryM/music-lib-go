@@ -19,3 +19,9 @@ databases:
     databaseName: render
     user: render
     plan: free # Бесплатный план для PostgreSQL
+
+envVarGroups:
+  - name: music-lib-go
+    envVars:
+      - key: SIGNING_KEY
+        value: envKey
