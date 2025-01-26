@@ -1,0 +1,18 @@
+previews:
+  generation: automatic # Enable preview environments
+
+services:
+  - type: web
+    name: go-server
+    env: docker
+    image: docker.io/mdmitrym/music-lib-go # Укажите ваш образ
+    plan: free # Выберите подходящий тарифный план
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase: go-db # Ссылка на базу данных PostgreSQL
+
+databases:
+  - name: go-db
+    databaseName: your_database_name
+    user: your_username
+    plan: free # Бесплатный план для PostgreSQL
