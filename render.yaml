@@ -16,6 +16,6 @@ services:
 
 databases:
   - name: postgres
-    #databaseName: render
-    #user: render
+    databaseName: render
+    user: render
     plan: free # Бесплатный план для PostgreSQL
