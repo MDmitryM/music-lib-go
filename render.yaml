@@ -4,6 +4,7 @@ previews:
 services:
   - type: web
     name: go-server
+    region: frankfurt
     runtime: docker
     image:
       url: docker.io/mdmitrym/music-lib-go # Укажите ваш образ
@@ -13,9 +14,11 @@ services:
         fromDatabase: 
           name: postgres # Ссылка на базу данных PostgreSQL
           property: connectionString
+      - fromGroup: music-lib-go
 
 databases:
   - name: postgres
+    region: frankfurt
     databaseName: render
     user: render
     plan: free # Бесплатный план для PostgreSQL
