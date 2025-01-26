@@ -16,6 +16,6 @@ services:
 
 databases:
   - name: go-db
-    databaseName: postgres
-    user: postgres
+    databaseName: render
+    user: render
     plan: free # Бесплатный план для PostgreSQL
