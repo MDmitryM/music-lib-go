@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	musiclib "github.com/MDmitryM/music-lib-go"
+	"github.com/MDmitryM/music-lib-go/pkg/repository"
 	"github.com/gofiber/fiber/v2"
 	"github.com/sirupsen/logrus"
 )
@@ -147,12 +148,25 @@ func (h *Handler) getUserSongById(ctx *fiber.Ctx) error {
 		})
 	}
 
+	cachedSong, err := h.services.CacheSong.GetUserCachedSongByID(userId, uint(songId))
+	if err == nil {
+		logrus.Println("song from cache")
+		return ctx.Status(http.StatusOK).JSON(cachedSong)
+	}
+	if err != repository.ErrCacheNotFound {
+		logrus.Errorf("error while getting song from cache, %s", err.Error())
+	}
+
 	song, err := h.services.Song.GetUserSongById(userId, songId)
 	if err != nil {
 		logrus.Error(err.Error())
 		return ctx.Status(http.StatusInternalServerError).JSON(MyError{
 			Err: err.Error(),
 		})
+	}
+
+	if err := h.services.CacheSong.CacheUserSong(userId, uint(songId), song); err != nil {
+		logrus.Errorf("error occured while song caching, %s", err.Error())
 	}
 
 	return ctx.Status(http.StatusOK).JSON(song)
@@ -253,6 +267,10 @@ func (h *Handler) deleteUserSongById(ctx *fiber.Ctx) error {
 		return ctx.Status(http.StatusInternalServerError).JSON(MyError{
 			Err: err.Error(),
 		})
+	}
+
+	if err := h.services.CacheSong.DeleteUserCachedSong(userId, uint(songId)); err != nil {
+		logrus.Errorf("error while deleting cached song, %s", err.Error())
 	}
 
 	logrus.Printf("song succesfully deleted songId = %v userId = %v\n", songId, userId)

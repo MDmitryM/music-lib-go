@@ -21,6 +21,8 @@ type Song interface {
 
 type CacheSong interface {
 	CacheUserSong(userID, songID uint, song musiclib.Song) error
+	GetUserCachedSongByID(userID, songID uint) (musiclib.Song, error)
+	DeleteUserCachedSong(userID, songID uint) error
 }
 
 type Service struct {

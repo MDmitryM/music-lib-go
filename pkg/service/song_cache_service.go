@@ -24,3 +24,21 @@ func (s *SongCacheService) CacheUserSong(userID, songID uint, song musiclib.Song
 	}
 	return s.repo.CacheUserSong(userID, songID, string(songJson))
 }
+
+func (s *SongCacheService) GetUserCachedSongByID(userID, songID uint) (musiclib.Song, error) {
+	data, err := s.repo.GetUserCachedSongByID(userID, songID)
+	if err != nil {
+		return musiclib.Song{}, err
+	}
+
+	var cachedSong musiclib.Song
+	if err := json.Unmarshal([]byte(data), &cachedSong); err != nil {
+		return musiclib.Song{}, err
+	}
+
+	return cachedSong, nil
+}
+
+func (s *SongCacheService) DeleteUserCachedSong(userID, songID uint) error {
+	return s.repo.DeleteUserCachedSong(userID, songID)
+}

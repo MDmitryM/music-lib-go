@@ -1,10 +1,14 @@
 package repository
 
 import (
+	"errors"
+
 	musiclib "github.com/MDmitryM/music-lib-go"
 	"github.com/MDmitryM/music-lib-go/models"
 	"gorm.io/gorm"
 )
+
+var ErrCacheNotFound = errors.New("cache not found")
 
 type Authorization interface {
 	CreateUser(input musiclib.User) (uint, error)
@@ -21,6 +25,8 @@ type Song interface {
 
 type CacheSong interface {
 	CacheUserSong(userID, songID uint, data string) error
+	GetUserCachedSongByID(userID, songID uint) (string, error)
+	DeleteUserCachedSong(userID, songID uint) error
 }
 
 type Repository struct {
