@@ -20,6 +20,7 @@ type Song interface {
 }
 
 type CacheSong interface {
+	CacheUserSong(userID, songID uint, data string) error
 }
 
 type Repository struct {
@@ -32,5 +33,6 @@ func NewRepository(db *gorm.DB, redis *RedisDB) *Repository {
 	return &Repository{
 		Authorization: NewAuthPostgres(db),
 		Song:          NewSongPostgres(db),
+		CacheSong:     NewSongRedis(redis),
 	}
 }

@@ -56,6 +56,10 @@ func (h *Handler) addUserSong(ctx *fiber.Ctx) error {
 		})
 	}
 
+	if err := h.services.CacheSong.CacheUserSong(userId, songId, songInput); err != nil {
+		logrus.Errorf("error occured while song caching")
+	}
+
 	logrus.Printf("song added successfully, song id =%v", songId)
 	return ctx.Status(http.StatusOK).JSON(AddSongResponse{
 		SongId: songId,

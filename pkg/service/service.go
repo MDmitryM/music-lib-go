@@ -19,14 +19,20 @@ type Song interface {
 	DeleteUserSongByID(userId uint, songId int) error
 }
 
+type CacheSong interface {
+	CacheUserSong(userID, songID uint, song musiclib.Song) error
+}
+
 type Service struct {
 	Authorization
 	Song
+	CacheSong
 }
 
 func NewService(repo *repository.Repository) *Service {
 	return &Service{
 		Authorization: NewAuthService(repo),
 		Song:          NewSongService(repo),
+		CacheSong:     NewSongCacheService(repo.CacheSong),
 	}
 }
