@@ -19,12 +19,16 @@ type Song interface {
 	DeleteUserSongByID(userId, songId uint) error
 }
 
+type CacheSong interface {
+}
+
 type Repository struct {
 	Authorization
 	Song
+	CacheSong
 }
 
-func NewRepository(db *gorm.DB) *Repository {
+func NewRepository(db *gorm.DB, redis *RedisDB) *Repository {
 	return &Repository{
 		Authorization: NewAuthPostgres(db),
 		Song:          NewSongPostgres(db),

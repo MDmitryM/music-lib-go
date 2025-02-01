@@ -30,6 +30,7 @@ func main() {
 	}
 
 	var conf repository.PostgresConfig
+	var redisConf repository.RedisConfig
 	env := os.Getenv("ENV")
 	logrus.Printf("env = %s\n", env)
 	if env != "production" {
@@ -45,6 +46,12 @@ func main() {
 			SSLMode:  viper.GetString("dev_db.sslmode"),
 			DBName:   viper.GetString("dev_db.dbname"),
 		}
+		redisConf = repository.RedisConfig{
+			Host:     viper.GetString("redis_dev.host"),
+			Port:     viper.GetString("redis_dev.port"),
+			Password: os.Getenv("REDIS_DB_PASSWORD"),
+			DB:       viper.GetInt("redis_dev.DB"),
+		}
 	} else {
 		conf = repository.PostgresConfig{
 			Host:     viper.GetString("db.host"),
@@ -53,6 +60,12 @@ func main() {
 			Password: os.Getenv("DB_PASSWORD"),
 			SSLMode:  viper.GetString("db.sslmode"),
 			DBName:   viper.GetString("db.dbname"),
+		}
+		redisConf = repository.RedisConfig{
+			Host:     viper.GetString("redis.host"),
+			Port:     viper.GetString("redis.port"),
+			Password: os.Getenv("REDIS_DB_PASSWORD"),
+			DB:       viper.GetInt("redis.DB"),
 		}
 	}
 
@@ -74,7 +87,12 @@ func main() {
 		logrus.Fatalf("Migration failed, %s", err.Error())
 	}
 
-	repository := repository.NewRepository(db)
+	redisDB, err := repository.NewRedisDB(redisConf)
+	if err != nil {
+		logrus.Fatalf("redis error, %s", err.Error())
+	}
+
+	repository := repository.NewRepository(db, redisDB)
 	service := service.NewService(repository)
 
 	h := handler.NewHandler(service)
