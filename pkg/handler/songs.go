@@ -225,6 +225,10 @@ func (h *Handler) updateUserSongInfo(ctx *fiber.Ctx) error {
 		})
 	}
 
+	if err := h.services.CacheSong.CacheUserSong(userId, uint(songId), updatedSong); err != nil {
+		logrus.Errorf("error occured while song caching")
+	}
+
 	logrus.Printf("song %s is updated successfully", updatedSong.Title)
 	return ctx.Status(http.StatusOK).JSON(updatedSong)
 }
