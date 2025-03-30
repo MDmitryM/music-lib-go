@@ -1,7 +1,6 @@
 services:
   web:
-    build: ./
-    command: ./music-lib-go
+    image: mdmitrym/music-lib-go:latest
     env_file:
       - .env
     environment:
