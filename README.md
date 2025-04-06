@@ -48,7 +48,7 @@ REST API сервис для управления музыкальной биб�
 
 1. Клонируйте репозиторий:
 ```bash
-git clone https://github.com/your-username/music-lib-go.git
+git clone https://github.com/MDmitryM/music-lib-go.git
 cd music-lib-go
 ```
 
