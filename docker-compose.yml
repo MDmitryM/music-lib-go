@@ -34,6 +34,8 @@ services:
 
   redis:
     image: redis
+    env_file:
+      - .env
     command: redis-server --requirepass ${REDIS_DB_PASSWORD}
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
