@@ -41,10 +41,10 @@ func main() {
 		conf = repository.PostgresConfig{
 			Host:     viper.GetString("dev_db.host"),
 			Port:     viper.GetString("dev_db.port"),
-			Username: viper.GetString("dev_db.username"),
+			Username: os.Getenv("POSTGRES_USER"),
 			Password: os.Getenv("DB_PASSWORD"),
-			SSLMode:  viper.GetString("dev_db.sslmode"),
-			DBName:   viper.GetString("dev_db.dbname"),
+			SSLMode:  "disable",
+			DBName:   os.Getenv("POSTGRES_DB"),
 		}
 		redisConf = repository.RedisConfig{
 			Host:     viper.GetString("redis_dev.host"),
@@ -56,10 +56,10 @@ func main() {
 		conf = repository.PostgresConfig{
 			Host:     viper.GetString("db.host"),
 			Port:     viper.GetString("db.port"),
-			Username: viper.GetString("db.username"),
+			Username: os.Getenv("POSTGRES_USER"),
 			Password: os.Getenv("DB_PASSWORD"),
-			SSLMode:  viper.GetString("db.sslmode"),
-			DBName:   viper.GetString("db.dbname"),
+			SSLMode:  "disable",
+			DBName:   os.Getenv("POSTGRES_DB"),
 		}
 		redisConf = repository.RedisConfig{
 			Host:     viper.GetString("redis.host"),
